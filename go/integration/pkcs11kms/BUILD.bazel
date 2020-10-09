@@ -1,0 +1,41 @@
+package(default_visibility = ["//:__subpackages__"])
+
+licenses(["notice"])  # keep
+
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "key.go",
+        "pkcs11_aead.go",
+        "pkcs11_client.go",
+    ],
+    importpath = "github.com/example/project/integration/pkcs11kms",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//core/registry:go_default_library",
+        "//tink:go_default_library",
+        "@com_github_google_uuid//:go_default_library",
+        "@com_github_thalesignite_crypto11//:go_default_library",
+        "@com_github_thalesignite_gose//:go_default_library",
+        "@com_github_thalesignite_gose//jose:go_default_library",
+    ],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = [
+        "key_test.go",
+        "pkcs11_aead_test.go",
+        "pkcs11_client_test.go",
+    ],
+    data = ["//integration/pkcs11kms/testdata:secrets"],
+    embed = [":go_default_library"],
+    deps = [
+        "//tink:go_default_library",
+        "@com_github_google_uuid//:go_default_library",
+        "@com_github_thalesignite_crypto11//:go_default_library",
+        "@com_github_thalesignite_gose//:go_default_library",
+    ],
+)
