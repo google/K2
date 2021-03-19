@@ -17,10 +17,12 @@
 package com.google.crypto.tink.aead;
 
 import com.google.crypto.tink.Aead;
+import com.google.crypto.tink.KeyTemplate;
 import com.google.crypto.tink.KeyTypeManager;
 import com.google.crypto.tink.KmsClient;
 import com.google.crypto.tink.KmsClients;
 import com.google.crypto.tink.Registry;
+import com.google.crypto.tink.internal.KeyTemplateProtoConverter;
 import com.google.crypto.tink.proto.KeyData.KeyMaterialType;
 import com.google.crypto.tink.proto.KmsEnvelopeAeadKey;
 import com.google.crypto.tink.proto.KmsEnvelopeAeadKeyFormat;
@@ -99,5 +101,23 @@ public class KmsEnvelopeAeadKeyManager extends KeyTypeManager<KmsEnvelopeAeadKey
 
   public static void register(boolean newKeyAllowed) throws GeneralSecurityException {
     Registry.registerKeyManager(new KmsEnvelopeAeadKeyManager(), newKeyAllowed);
+  }
+
+  /**
+   * @return a new {@link KeyTemplate} that can generate ai
+   *     {@link com.google.crypto.tink.proto.KmsEnvelopeAeadKey} whose KEK is pointing to
+   *     {@code kekUri} and DEK template is {@code dekTemplate}.
+   * @throws GeneralSecurityException if the {@link KeyTemplate} for the DEK is invalid.
+   */
+  public static KeyTemplate envelopeTemplate(String kekUri, KeyTemplate dekTemplate)
+      throws GeneralSecurityException {
+    KmsEnvelopeAeadKeyFormat format = KmsEnvelopeAeadKeyFormat.newBuilder()
+        .setDekTemplate(KeyTemplateProtoConverter.toProto(dekTemplate))
+        .setKekUri(kekUri)
+        .build();
+    return KeyTemplate.create(
+        new KmsEnvelopeAeadKeyManager().getKeyType(),
+        format.toByteArray(),
+        KeyTemplate.OutputPrefixType.TINK);
   }
 }

@@ -535,7 +535,7 @@ using the credentials in `credentials.json` as follows:
     String kmsKeyUri =
         "gcp-kms://projects/tink-examples/locations/global/keyRings/foo/cryptoKeys/bar";
     KeysetHandle keysetHandle = KeysetHandle.generateNew(
-        AeadKeyTemplates.createKmsEnvelopeAeadKeyTemplate(kmsKeyUri, AeadKeyTemplates.AES128_GCM));
+        KmsEnvelopeAeadKeyManager.envelopeTemplate(kmsUri, AesGcmKeyManager.aes128GcmTemplate()));
 
     // 2. Register the KMS client.
     KmsClients.add(new GcpKmsClient()
