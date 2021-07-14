@@ -60,6 +60,9 @@ class AwsKmsClient : public crypto::tink::KmsClient  {
   crypto::tink::util::StatusOr<std::unique_ptr<Aead>>
   GetAead(absl::string_view key_uri) const override;
 
+  // Returns the config used to create the client
+  Aws::Client::ClientConfiguration GetConfig() const;
+
  private:
   AwsKmsClient() {}
   // Initializes AWS API.
@@ -69,6 +72,7 @@ class AwsKmsClient : public crypto::tink::KmsClient  {
 
   std::string key_arn_;
   Aws::Auth::AWSCredentials credentials_;
+  Aws::Client::ClientConfiguration config_;
   std::shared_ptr<Aws::KMS::KMSClient> aws_client_;
 };
 
