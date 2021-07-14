@@ -779,7 +779,7 @@ crypto::tink::util::StatusOr<std::unique_ptr<P>> RegistryImpl::WrapKeyset(
   }
   crypto::tink::util::StatusOr<std::unique_ptr<P>> primitive_result =
       wrapper_result.ValueOrDie()->Wrap(keyset);
-  return std::move(primitive_result);
+  return primitive_result;
 }
 
 inline crypto::tink::util::Status RegistryImpl::RestrictToFipsIfEmpty() const {
